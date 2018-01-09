@@ -1,6 +1,7 @@
 <?php
  $json_str = file_get_contents('php://input'); //接收REQUEST的BODY
  $json_obj = json_decode($json_str); //轉JSON格式
+
 $myfile = fopen("log.txt","w+") or die("Unable to open file!"); //設定一個log.txt 用來印訊息
  fwrite($myfile, "\xEF\xBB\xBF".$json_str); //在字串前加入\xEF\xBB\xBF轉成utf8格式
  fclose($myfile);
@@ -23,6 +24,8 @@ $myfile = fopen("log.txt","w+") or die("Unable to open file!"); //設定一個lo
 $imagefile = fopen($objID.".jpeg", "w+") or die("Unable to open file!"); //設定一個log.txt，用來印訊息
 			fwrite($imagefile, $json_content); 
 			fclose($imagefile);
+
+
 $header[] = "Content-Type: application/json";
 			$post_data = array (
 				"requests" => array (
@@ -47,13 +50,13 @@ $header[] = "Content-Type: application/json";
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $header);                                                                                                   
 			$result = json_decode(curl_exec($ch));
-			/*$result_ary = mb_split("\n",$result -> responses[0] -> fullTextAnnotation -> text);
+			$result_ary = mb_split("\n",$result -> responses[0] -> fullTextAnnotation -> text);
 			$ans_txt = "這張發票沒用了，你又製造了一張垃圾";
 			foreach ($result_ary as $val) {
 				if($val == "AG-26272435"){
 					$ans_txt = "恭喜您中獎啦，快分紅!!";
 				}
-			}*/
+			}
 			$response = array (
 				"to" => $sender_userid,
 				"messages" => array (
@@ -63,6 +66,8 @@ $header[] = "Content-Type: application/json";
 					)
 				)
 			);
+
+
  //回傳給line server
  $header[] = "Content-Type: application/json";
  $header[] = "Authorization: Bearer bfGofyeq97YW024HOMoAeMb/Duq8MgHgh74P+g2BCoOBD+VHdydSKiK3goDNp4rUfcb6EPWGYxET9uv1jCTbSqrJ9m/bdoGSpT3LoVFd+ogKalgIGKrTx/Z1BXAicAeomyvnwSgPv5B9NiyQ/J8O9gdB04t89/1O/w1cDnyilFU=";
@@ -73,4 +78,5 @@ $header[] = "Content-Type: application/json";
  curl_setopt($ch, CURLOPT_HTTPHEADER, $header);                                                                                                   
  $result = curl_exec($ch);
  curl_close($ch); 
+
 ?>
