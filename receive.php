@@ -1,6 +1,7 @@
 <?php
  $json_str = file_get_contents('php://input'); //接收REQUEST的BODY
  $json_obj = json_decode($json_str); //轉JSON格式
+
 $myfile = fopen("log.txt","w+") or die("Unable to open file!"); //設定一個log.txt 用來印訊息
  fwrite($myfile, "\xEF\xBB\xBF".$json_str); //在字串前加入\xEF\xBB\xBF轉成utf8格式
  fclose($myfile);
@@ -15,7 +16,7 @@ $myfile = fopen("log.txt","w+") or die("Unable to open file!"); //設定一個lo
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				'Authorization: Bearer bfGofyeq97YW024HOMoAeMb/Duq8MgHgh74P+g2BCoOBD+VHdydSKiK3goDNp4rUfcb6EPWGYxET9uv1jCTbSqrJ9m/bdoGSpT3LoVFd+ogKalgIGKrTx/Z1BXAicAeomyvnwSgPv5B9NiyQ/J8O9gdB04t89/1O/w1cDnyilFU=
+'Authorization: Bearer bfGofyeq97YW024HOMoAeMb/Duq8MgHgh74P+g2BCoOBD+VHdydSKiK3goDNp4rUfcb6EPWGYxET9uv1jCTbSqrJ9m/bdoGSpT3LoVFd+ogKalgIGKrTx/Z1BXAicAeomyvnwSgPv5B9NiyQ/J8O9gdB04t89/1O/w1cDnyilFU=',
 			));
 				
 			$json_content = curl_exec($ch);
@@ -23,6 +24,9 @@ $myfile = fopen("log.txt","w+") or die("Unable to open file!"); //設定一個lo
 $imagefile = fopen($objID.".jpeg", "w+") or die("Unable to open file!"); //設定一個log.txt，用來印訊息
 			fwrite($imagefile, $json_content); 
 			fclose($imagefile);
+
+
+
  //回傳給line server
  $header[] = "Content-Type: application/json";
  $header[] = "Authorization: Bearer bfGofyeq97YW024HOMoAeMb/Duq8MgHgh74P+g2BCoOBD+VHdydSKiK3goDNp4rUfcb6EPWGYxET9uv1jCTbSqrJ9m/bdoGSpT3LoVFd+ogKalgIGKrTx/Z1BXAicAeomyvnwSgPv5B9NiyQ/J8O9gdB04t89/1O/w1cDnyilFU=";
@@ -33,4 +37,5 @@ $imagefile = fopen($objID.".jpeg", "w+") or die("Unable to open file!"); //設�
  curl_setopt($ch, CURLOPT_HTTPHEADER, $header);                                                                                                   
  $result = curl_exec($ch);
  curl_close($ch); 
+
 ?>
