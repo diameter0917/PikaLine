@@ -1,6 +1,9 @@
 <?php
  $json_str = file_get_contents('php://input'); //接收REQUEST的BODY
  $json_obj = json_decode($json_str); //轉JSON格式
+$myfile = fopen("log.txt","w+") or die("Unable to open file!"); //設定一個log.txt 用來印訊息
+ fwrite($myfile, "\xEF\xBB\xBF".$json_str); //在字串前加入\xEF\xBB\xBF轉成utf8格式
+ fclose($myfile);
  //產生回傳給line server的格式
  $sender_userid = $json_obj->events[0]->source->userId;
  $sender_txt = $json_obj->events[0]->message->text;
@@ -44,7 +47,7 @@
 				)
 			);
         		break;
-		  case "location":
+		 case "location":
 			$line_server_url = 'https://api.line.me/v2/bot/message/reply';
         		$response = array (
 				"replyToken" => $sender_replyToken,
@@ -72,10 +75,37 @@
 				)
 			);
         		break;
+		 case "button":
+			$line_server_url = 'https://api.line.me/v2/bot/message/reply';
+        		$response = array (
+				"replyToken" => $sender_replyToken,
+				"messages" => array (
+					array (
+						"type" => "template",
+						"altText" => "this is a buttons template",
+						"template" => array (
+							"type" => "buttons",
+							"thumbnailImageUrl" => "https://www.w3schools.com/css/paris.jpg",
+							"title" => "Menu",
+							"text" => "Please select",
+							"actions" => array (
+								array (
+									"type" => "postback",
+									"label" => "Buy",
+									"data" => "action=buy&itemid=123"
+								),
+								array (
+									"type" => "postback",
+                   							"label" => "Add to cart",
+                    							"data" => "action=add&itemid=123"
+								)
+							)
+						)
+					)
+				)
+			);
+        		break;
  }
- $myfile = fopen("log.txt","w+") or die("Unable to open file!"); //設定一個log.txt 用來印訊息
- fwrite($myfile, "\xEF\xBB\xBF".json_encode($response)); //在字串前加入\xEF\xBB\xBF轉成utf8格式
- fclose($myfile);
  //回傳給line server
  $header[] = "Content-Type: application/json";
  $header[] = "Authorization: Bearer bfGofyeq97YW024HOMoAeMb/Duq8MgHgh74P+g2BCoOBD+VHdydSKiK3goDNp4rUfcb6EPWGYxET9uv1jCTbSqrJ9m/bdoGSpT3LoVFd+ogKalgIGKrTx/Z1BXAicAeomyvnwSgPv5B9NiyQ/J8O9gdB04t89/1O/w1cDnyilFU=";
